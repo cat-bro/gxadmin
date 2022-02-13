@@ -372,7 +372,7 @@ meta_influx-query() { ## <db> "<query>": Query an influx DB
 	curl --silent "${INFLUX_URL}/query?db=${DB}&u=${INFLUX_USER}&p=${INFLUX_PASS}" --data-urlencode "q=${QUERY}"
 }
 
-meta_iquery-grt-export() { ## : Export data from a GRT database for sending to influx
+meta_iquery_grt_export() { ## : Export data from a GRT database for sending to influx
 	handle_help "$@" <<-EOF
 		**WARNING**:
 

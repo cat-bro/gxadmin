@@ -458,9 +458,9 @@ meta_iquery_grt1() { ## : Export data from a GRT database for sending to influx
 		One row per job: tool_id, runtime, cores, file_size, instance, create_time, job_id
 	EOF
 
-	fields="state=5;cores=6;runtime=7;sum_input_size=8"
-	timestamp="4"
-	tags="tool_id=0;tool_version=1;instance=2;job_id=3"
+	fields="cores=6;runtime=7;sum_input_size=8"
+	timestamp="5"
+	tags="tool_id=0;tool_version=1;instance=2;job_id=3;state=4"
 
 	read -r -d '' QUERY <<-EOF
 			SELECT
@@ -468,9 +468,9 @@ meta_iquery_grt1() { ## : Export data from a GRT database for sending to influx
 				j.tool_version as tool_version,
 				g.title,
 				j.id as job_id,
-				extract(epoch from date_trunc('week', j.create_time)) || '000000000' as date,
 				j.state as state,
-				FLOOR(jmn1.value) as cores,
+				extract(epoch from date_trunc('week', j.create_time)) || '000000000' as date,
+				FLOOR(COALESCE(jmn1.value, 0.0) as cores,
 				ROUND(COALESCE(jmn2.value, 0)/3600.0, 7) as runtime,
 				(
 					SELECT

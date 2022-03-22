@@ -489,6 +489,8 @@ meta_iquery_grt1() { ## : Export data from a GRT database for sending to influx
 			api_galaxyinstance g
 			WHERE
 				j.instance_id = g.id
+			AND
+				j.state = 'ok'
 			LIMIT $limit
 
 	EOF

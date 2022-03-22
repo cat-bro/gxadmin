@@ -411,7 +411,7 @@ meta_iquery_grt_metrics() { ## : Export data from a GRT database for sending to 
 		One row per job: tool_id, runtime, cores, file_size, instance, create_time, job_id
 	EOF
 
-	fields="job_id=3,date=4,state=5,cores=6,runtime=7,sum_input_size=8"
+	fields="job_id=3;date=4;state=5;cores=6;runtime=7;sum_input_size=8"
 	timestamp="3"
 	tags="tool_id=0;tool_version=1;instance=2"
 

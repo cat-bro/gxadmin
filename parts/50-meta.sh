@@ -428,15 +428,15 @@ meta_iquery_grt_metrics() { ## : Export data from a GRT database for sending to 
                     WHERE jmn.name = 'galaxy_slots'
                     AND jmn.external_job_id = j.external_job_id
                 ) as cores,
-                (SELECT 
-                    TO_CHAR((jmn.value || ' second')::interval, 'HH24:MI:SS')
+                (SELECT
+					ROUND(COALESCE(jmn.value, 0)/3600, 7)
                     FROM api_metricnumeric jmn
                     WHERE jmn.name = 'runtime_seconds'
                     AND jmn.external_job_id = j.external_job_id
                 ) as runtime,
 				(
 					SELECT
-					SUM(d.file_size)
+					ROUND(COALESCE(SUM(d.total_size), 0.0)/(1024*1024), 7)
 					FROM api_dataset d
 					WHERE d.external_job_id = j.external_job_id
 				) as sum_input_size

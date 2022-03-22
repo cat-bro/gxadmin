@@ -436,7 +436,7 @@ meta_iquery_grt_metrics() { ## : Export data from a GRT database for sending to 
                 ) as runtime,
 				(
 					SELECT
-					ROUND(COALESCE(SUM(d.total_size), 0.0)/(1024*1024), 7)
+					ROUND(COALESCE(SUM(d.file_size), 0.0)/(1024*1024), 7)
 					FROM api_dataset d
 					WHERE d.external_job_id = j.external_job_id
 				) as sum_input_size

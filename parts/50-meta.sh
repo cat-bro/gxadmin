@@ -450,6 +450,7 @@ meta_iquery_grt_metrics() { ## : Export data from a GRT database for sending to 
 
 # todo: give this a decent name
 meta_iquery_grt1() { ## : Export data from a GRT database for sending to influx
+	[ "$1" ] && limit="$1" || limit=100
 	handle_help "$@" <<-EOF
 		**WARNING**:
 
@@ -472,7 +473,7 @@ meta_iquery_grt1() { ## : Export data from a GRT database for sending to influx
 				ROUND(COALESCE(jmn2.value, 0)/3600.0, 7) as runtime,
 				(
 					SELECT
-					ROUND(COALESCE(SUM(d.file_size), 0.0)/(1024*1024.0), 7)
+					ROUND(COALESCE(SUM(d.file_size), 0.0)/(1024*1024*1024.0), 7)
 					FROM api_dataset d
 					WHERE d.external_job_id = j.external_job_id
 				) as sum_input_size
@@ -488,7 +489,7 @@ meta_iquery_grt1() { ## : Export data from a GRT database for sending to influx
 			api_galaxyinstance g
 			WHERE
 				j.instance_id = g.id
-			LIMIT 10
+			LIMIT $limit
 
 	EOF
 }

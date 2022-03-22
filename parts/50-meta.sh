@@ -402,6 +402,53 @@ meta_iquery-grt-export() { ## : Export data from a GRT database for sending to i
 	EOF
 }
 
+# todo: give this a decent name
+meta_iquery_grt_metrics() { ## : Export data from a GRT database for sending to influx
+	handle_help "$@" <<-EOF
+		**WARNING**:
+
+		!> GRT database specific query, will not work with a galaxy database!
+		One row per job: tool_id, runtime, cores, file_size, instance, create_time, job_id
+	EOF
+
+	fields="job_id=3,date=4,state=5,cores=6,runtime=7,sum_input_size=8"
+	timestamp="3"
+	tags="tool_id=0;tool_version=1;instance=2"
+
+	read -r -d '' QUERY <<-EOF
+			SELECT
+				j.tool_id as tool_id,
+				j.tool_version as tool_version,
+				g.title,
+				j.id as job_id,
+				extract(epoch from date_trunc('week', j.create_time)) || '000000000' as date,
+				j.state as state,
+                (SELECT 
+                    jmn.value
+                    FROM api_metricnumeric jmn
+                    WHERE jmn.name = 'galaxy_slots'
+                    AND jmn.external_job_id = j.external_job_id
+                ) as cores,
+                (SELECT 
+                    TO_CHAR((jmn.value || ' second')::interval, 'HH24:MI:SS')
+                    FROM api_metricnumeric jmn
+                    WHERE jmn.name = 'runtime_seconds'
+                    AND jmn.external_job_id = j.external_job_id
+                ) as runtime,
+				(
+					SELECT
+					pg_size_pretty(SUM(d.file_size))
+					FROM api_dataset d
+					WHERE d.external_job_id = j.external_job_id
+				) as sum_input_size
+			FROM api_job j, api_galaxyinstance g
+			WHERE
+				j.instance_id = g.id
+			LIMIT 10
+
+	EOF
+}
+
 meta_whatsnew() { ## : What's new in this version of gxadmin
 	handle_help "$@" <<-EOF
 		Informs users of what's new in the changelog since their version

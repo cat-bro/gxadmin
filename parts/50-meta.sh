@@ -458,9 +458,9 @@ meta_iquery_grt1() { ## : Export data from a GRT database for sending to influx
 		One row per job: tool_id, runtime, cores, file_size, instance, create_time, job_id
 	EOF
 
-	fields="job_id=3;state=5;cores=6;runtime=7;sum_input_size=8"
+	fields="state=5;cores=6;runtime=7;sum_input_size=8"
 	timestamp="4"
-	tags="tool_id=0;tool_version=1;instance=2"
+	tags="tool_id=0;tool_version=1;instance=2;job_id=3"
 
 	read -r -d '' QUERY <<-EOF
 			SELECT

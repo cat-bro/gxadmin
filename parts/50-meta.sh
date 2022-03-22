@@ -468,11 +468,11 @@ meta_iquery_grt1() { ## : Export data from a GRT database for sending to influx
 				j.id as job_id,
 				extract(epoch from date_trunc('week', j.create_time)) || '000000000' as date,
 				j.state as state,
-				jmn1.value as cores,
-				jmn2.value as runtime,
+				FLOOR(jmn1.value) as cores,
+				ROUND(COALESCE(jmn2.value, 0)/3600.0, 7) as runtime,
 				(
 					SELECT
-					ROUND(COALESCE(SUM(d.file_size), 0.0)/(1024*1024), 7)
+					ROUND(COALESCE(SUM(d.file_size), 0.0)/(1024*1024.0), 7)
 					FROM api_dataset d
 					WHERE d.external_job_id = j.external_job_id
 				) as sum_input_size

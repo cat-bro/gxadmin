@@ -412,7 +412,6 @@ meta_iquery_grt_metrics() { ## : Export data from a GRT database for sending to 
 	EOF
 
 	fields="job_id=3;date=4;state=5;cores=6;runtime=7;sum_input_size=8"
-	timestamp="3"
 	tags="tool_id=0;tool_version=1;instance=2"
 
 	read -r -d '' QUERY <<-EOF
@@ -437,14 +436,14 @@ meta_iquery_grt_metrics() { ## : Export data from a GRT database for sending to 
                 ) as runtime,
 				(
 					SELECT
-					pg_size_pretty(SUM(d.file_size))
+					SUM(d.file_size)
 					FROM api_dataset d
 					WHERE d.external_job_id = j.external_job_id
 				) as sum_input_size
 			FROM api_job j, api_galaxyinstance g
 			WHERE
 				j.instance_id = g.id
-			LIMIT 10
+			LIMIT 10000
 
 	EOF
 }

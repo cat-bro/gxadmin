@@ -470,7 +470,7 @@ meta_iquery_grt1() { ## : Export data from a GRT database for sending to influx
 				j.id as job_id,
 				j.state as state,
 				extract(epoch from date_trunc('week', j.create_time)) || '000000000' as date,
-				FLOOR(COALESCE(jmn1.value, 0.0) as cores,
+				FLOOR(COALESCE(jmn1.value, 0.0)) as cores,
 				ROUND(COALESCE(jmn2.value, 0)/3600.0, 7) as runtime,
 				(
 					SELECT

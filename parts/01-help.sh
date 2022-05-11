@@ -54,7 +54,7 @@ didyoumean() {
 
 	# Is this a known subcommand
 	known_command=0
-	for x in $registered_subcommands; do
+	for x in "$registered_subcommands local"; do
 		if [[ "$1" == "$x" ]]; then
 			known_command=1
 		fi

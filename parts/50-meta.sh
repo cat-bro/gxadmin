@@ -497,6 +497,57 @@ meta_iquery_grt1() { ## : Export data from a GRT database for sending to influx
 	EOF
 }
 
+# todo: give this a decent name
+meta_iquery_grt2() { ## : Export data from a GRT database for sending to influx
+	[ "$1" ] && limit="$1" || limit=100
+	handle_help "$@" <<-EOF
+		**WARNING**:
+
+		!> GRT database specific query, will not work with a galaxy database!
+		One row per job: tool_id, runtime, cores, file_size, instance, create_time, job_id
+	EOF
+
+	fields="cores=6;runtime=7;sum_input_size=8"
+	timestamp="5"
+	tags="tool_id=0;tool_version=1;instance=2;job_id=3;state=4"
+
+	read -r -d '' QUERY <<-EOF
+			SELECT
+				j.tool_id as tool_id,
+				j.tool_version as tool_version,
+				g.title,
+				j.id as job_id,
+				j.state as state,
+				extract(epoch from date_trunc('week', j.create_time)) || '000000000' as date,
+				FLOOR(COALESCE(jmn1.value, 0.0)) as cores,
+				ROUND(COALESCE(jmn2.value, 0)/3600.0, 7) as runtime,
+				(
+					SELECT
+					ROUND(COALESCE(SUM(d.file_size), 0.0)/(1024*1024*1024.0), 7)
+					FROM api_dataset d
+					WHERE d.external_job_id = j.external_job_id
+				) as sum_input_size
+			FROM api_job j
+				LEFT JOIN (SELECT * FROM api_metricnumeric WHERE id > 11032666) AS jmn1
+					ON jmn1.external_job_id = j.external_job_id
+					AND jmn1.instance_id = j.instance_id
+					AND jmn1.name = 'galaxy_slots'
+				LEFT JOIN (SELECT * FROM api_metricnumeric WHERE id > 11032666) AS jmn2
+					ON jmn2.external_job_id = j.external_job_id
+					AND jmn2.instance_id = j.instance_id
+					AND jmn2.name = 'runtime_seconds',
+			api_galaxyinstance g
+			WHERE
+				j.instance_id = g.id
+			AND
+				j.state = 'ok'
+			AND
+			  j.id > 2524922
+			LIMIT $limit
+
+	EOF
+}
+
 
 meta_whatsnew() { ## : What's new in this version of gxadmin
 	handle_help "$@" <<-EOF

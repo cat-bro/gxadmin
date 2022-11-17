@@ -132,7 +132,7 @@ wonderful_argument_parser() {
 				# We're past the positional and into the optional
 				k="${optional_args[$optional_index]}"
 				echo $k
-				eco ${a_cur}
+				echo ${a_cur}
 				parsed_keys+=("$(echo "$k" | sed 's/|.*//g')")
 				parsed_vals+=("${a_cur}")
 				optional_index=$(( optional_index + 1 ))

@@ -4392,7 +4392,7 @@ query_jobs()  { ##? [--tool] [--destination] [--limit] [--states] [--user] [--te
 	EOF
 }
 
-query_jobz()  { ##? [--tool]: baaa
+query_jobz()  { ##? [tool]: baaa
 	handle_help "$@" <<-EOF
 		Displays a list of jobs ordered from most recently updated, which can be filtered by states, destination_id,
 		tool_id or user. By default up to 50 rows are returned which can be adjusted with the --limit or -l flag.

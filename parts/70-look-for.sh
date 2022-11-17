@@ -162,6 +162,7 @@ wonderful_argument_parser() {
 	size=${#parsed_keys[@]}
 	for i in $(seq 0 $((size - 1))); do
 		#printf "\t%10s=%-10s\n" "${parsed_keys[$i]}" "${parsed_vals[$i]}"
+		echo "exporting the arg_! arg_${parsed_keys[$i]}=${parsed_vals[$i]}"
 		export arg_${parsed_keys[$i]}="${parsed_vals[$i]}"
 	done
 }

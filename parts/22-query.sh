@@ -4297,7 +4297,7 @@ query_jobs()  { ##? [tool] [destination] [limit] [states] [user] [--terminal] [-
 		Displays a list of jobs ordered from most recently updated, which can be filtered by states, destination_id,
 		tool_id or user. By default up to 50 rows are returned which can be adjusted with the --limit or -l flag.
 
-		$ gxadmin query jobs --destination=pulsar-nci-test
+		$ gxadmin query jobs --destination pulsar-nci-test
 		  id   |     create_time     |     update_time     | user_id |  state  |                                           tool_id                                           |  handler  |         destination         | external_id
 		-------+---------------------+---------------------+---------+---------+---------------------------------------------------------------------------------------------+-----------+-----------------------------+-------------
 		 14701 | 2022-10-31 00:54:43 | 2022-10-31 00:55:02 |      16 | ok      | toolshed.g2.bx.psu.edu/repos/devteam/bwa/bwa_mem/0.7.17.2                                   | handler_0 | pulsar-nci-test             | 14701
@@ -4306,7 +4306,7 @@ query_jobs()  { ##? [tool] [destination] [limit] [states] [user] [--terminal] [-
 		 14584 | 2022-10-19 10:45:12 | 2022-10-19 10:45:31 |      16 | ok      | toolshed.g2.bx.psu.edu/repos/devteam/bwa/bwa_mem/0.7.17.2                                   | handler_2 | pulsar-nci-test             | 14584
 		 14580 | 2022-10-19 10:44:43 | 2022-10-19 10:45:02 |      16 | ok      | toolshed.g2.bx.psu.edu/repos/devteam/bwa/bwa_mem/0.7.17.2                                   | handler_2 | pulsar-nci-test             | 14580
 			
-		$ gxadmin query jobs -d=pulsar-nci-test -t=bionano
+		$ gxadmin query jobs --destination pulsar-nci-test --tool bionano
 		  id   |     create_time     |     update_time     | user_id | state |                                        tool_id                                         |       handler       |         destination         | external_id
 		-------+---------------------+---------------------+---------+-------+----------------------------------------------------------------------------------------+---------------------+-----------------------------+-------------
 		 14085 | 2022-09-08 07:44:48 | 2022-09-08 08:21:58 |       3 | ok    | toolshed.g2.bx.psu.edu/repos/bgruening/bionano_scaffold/bionano_scaffold/3.6.1+galaxy3 | handler_2           | pulsar-nci-test             | 14085
@@ -4392,7 +4392,7 @@ query_jobs()  { ##? [tool] [destination] [limit] [states] [user] [--terminal] [-
 	EOF
 }
 
-query_jobz()  { ##? [tool]: baaa
+query_jobz()  { ##? [tool] [destination]: baaa
 	handle_help "$@" <<-EOF
 		Displays a list of jobs ordered from most recently updated, which can be filtered by states, destination_id,
 		tool_id or user. By default up to 50 rows are returned which can be adjusted with the --limit or -l flag.

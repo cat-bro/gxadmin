@@ -79,12 +79,17 @@ wonderful_argument_parser() {
 	while true; do
 		# Get the first bit of content from the arguments
 		a_cur=${args[$offset]}
+		echo a_cur is $a_cur
 		if [[ "$a_cur" == "" ]]; then
+			echo "empty so break"
 			break
 		fi
 
 		if [[ "$a_cur" == "--"* ]]; then
+			echo "starts with --"
 			# This is a flag. So find the matching flag definition.
+			echo "optional flag args are"
+			echo "${optional_flag_args[@]}"
 			for arg in "${optional_flag_args[@]}"; do
 				# Two types of args: with, without values
 				if [[ "$arg" == "[--"* ]]; then
@@ -110,6 +115,7 @@ wonderful_argument_parser() {
 				fi
 			done
 		else
+			echo "non-flag"
 			# This is a non-flag, so maybe a positional, maybe an optional argument.
 			# So we need to find the Nth positional (via positional_index)
 			if (( (positional_index + optional_index) >= (positional_count + optional_count) )); then
@@ -122,6 +128,7 @@ wonderful_argument_parser() {
 				parsed_vals+=("${a_cur}")
 				positional_index=$((positional_index + 1))
 			else
+				echo "it should be here for both"
 				# We're past the positional and into the optional
 				k="${optional_args[$optional_index]}"
 				parsed_keys+=("$(echo "$k" | sed 's/|.*//g')")

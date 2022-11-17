@@ -4292,7 +4292,7 @@ query_queue-details-drm() { ##? [--all] [--seconds] [--since-update]: Detailed o
 	EOF
 }
 
-query_jobs()  { ##? [--tool] [--destination] [--limit] [--states] [--user] [--terminal] [--nonterminal]: List jobs ordered by most recently updated
+query_jobs()  { ##? [tool] [destination] [limit] [states] [user] [--terminal] [--nonterminal]: List jobs ordered by most recently updated
 	handle_help "$@" <<-EOF
 		Displays a list of jobs ordered from most recently updated, which can be filtered by states, destination_id,
 		tool_id or user. By default up to 50 rows are returned which can be adjusted with the --limit or -l flag.

@@ -5065,9 +5065,6 @@ query_jobs() { ##? [--tool=] [--destination=] [--limit=50] [--states=<comma,sep,
 	destination_id_substr="${arg_destination}"
 	states="${arg_states}"
 
-	if [[ -n "$arg_user" ]]; then
-		user_filter=" AND $(get_user_filter "$arg_user")"
-	fi
 	if [[ -n "$arg_terminal" ]]; then
 		states="ok,deleted,error"
 	fi
@@ -5075,15 +5072,33 @@ query_jobs() { ##? [--tool=] [--destination=] [--limit=50] [--states=<comma,sep,
 		states="new,queued,running"
 	fi
 
-	state_filter=
-	if [[ "$states" ]]; then
-		states="'$(echo "$states" | sed "s/,/', '/g")'"
-		state_filter="AND job.state IN (${states})"
+	jobs_query_filters=()
+
+	if [[ -n "$tool_id_substr" ]]; then
+		jobs_query_filters+=("job.tool_id LIKE '%${tool_id_substr}%'")
 	fi
 
-	destination_filter=
+	if [[ -n "$states" ]]; then
+		formatted_states="'$(echo "$states" | sed "s/,/', '/g")'"
+		jobs_query_filters+=("job.state IN (${formatted_states})")
+	fi
+
 	if [[ -n "$destination_id_substr" ]]; then
-		destination_filter="AND job.destination_id ~ '${destination_id_substr}'";
+		jobs_query_filters+=("job.destination_id LIKE '%${destination_id_substr}%'")
+	fi
+
+	if [[ -n "$user_id" ]]; then
+		jobs_query_filters+=("job.user_id = ${user_id}")
+	fi
+
+	jobs_query_where_clauses=""
+	if (( ${#jobs_query_where_clauses[@]} )); then
+		jobs_query_where_sql="WHERE $(IFS=' AND '; echo "${jobs_query_filters[*]}")"
+	fi
+
+	jobs_query_order="job.update_time"
+	if [[ -n "$arg_order_by_create_time" ]]; then
+		jobs_query_order="job.create_time"
 	fi
 
 	read -r -d '' QUERY <<-EOF
@@ -5100,8 +5115,8 @@ query_jobs() { ##? [--tool=] [--destination=] [--limit=50] [--states=<comma,sep,
 			FROM job
 			LEFT OUTER JOIN
 				galaxy_user ON job.user_id = galaxy_user.id
-			WHERE job.tool_id ~ '$tool_id_substr' ${destination_filter} ${state_filter} $user_filter
-			ORDER BY job.update_time desc
+			$jobs_query_where_sql
+			ORDER BY job.update_time DESC
 			LIMIT $arg_limit
 	EOF
 }

@@ -1548,7 +1548,7 @@ query_tool-available-metrics() { ##? <tool_id>: list all available metrics for a
 	EOF
 }
 
-query_tool-memory-per-inputs() { ##? <tool_id> [--like]: See memory usage and inout size data
+query_tool-memory-per-inputs() { ##? <tool_id> [--like] [--metric=]: See memory usage and inout size data
 	meta <<-EOF
 		ADDED: 19
 	EOF
@@ -1591,6 +1591,13 @@ query_tool-memory-per-inputs() { ##? <tool_id> [--like]: See memory usage and in
 		tool_clause="j.tool_id like '$arg_tool_id'"
 	fi
 
+	metric_clause="jmn.metric_name = 'memory.memsw.max_usage_in_bytes'"
+	if [[ -n "$arg_metric" ]]; then
+		metric_clause="jmn.metric_name = '$arg_metric'"
+	fi
+
+
+
 	read -r -d '' QUERY <<-EOF
 		WITH job_cte AS (
 			SELECT
@@ -1614,7 +1621,7 @@ query_tool-memory-per-inputs() { ##? <tool_id> [--like]: See memory usage and in
 			WHERE
 				jmn.plugin = 'cgroup'
 				AND
-					jmn.metric_name = 'memory.memsw.max_usage_in_bytes'
+					$metric_clause
 		),
 		data_cte AS (
 			SELECT

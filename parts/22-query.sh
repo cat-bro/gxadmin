@@ -5100,7 +5100,7 @@ query_jobs() { ##? [--tool=] [--destination=] [--limit=50] [--states=<comma,sep,
 			FROM job
 			LEFT OUTER JOIN
 				galaxy_user ON job.user_id = galaxy_user.id
-			WHERE job.tool_id ~ '$tool_id_substr' ${destination_filter} ${state_filter} $user_filter
+			WHERE job.tool_id LIKE '%${tool_id_substr}%' ${destination_filter} ${state_filter} $user_filter
 			ORDER BY job.update_time desc
 			LIMIT $arg_limit
 	EOF

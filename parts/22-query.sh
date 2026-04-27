@@ -11,7 +11,7 @@ _query_long_help="
 
 query_longest-running-jobs-by-destination() { ## : List the longest (currently) running jobs on the Galaxy server by destination
 	handle_help "$@" <<-EOF
-		List the longest (currently) running jobs on the Galaxy server by destination
+		List the longest (currently) running jobs on the Galaxy server by destination sdfsdjflsjdf
 
 		job_id | tool_id                                                                                  | destination_id         | hours_since_running
 		------ | ---------------------------------------------------------------------------------------- | ---------------------- | -------------------

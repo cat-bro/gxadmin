@@ -5937,6 +5937,6 @@ query_history-exports() { ##? [--limit=50] [--user=] [--min_history_size=] : Lis
 			LEFT JOIN galaxy_user ON galaxy_user.id = history.user_id
 			WHERE store_export_association.object_type = 'history' $user_filter ${min_history_size_filter}
 			ORDER BY store_export_association.create_time desc
-			LIMIT $arg_limit;
+			LIMIT $arg_limit
 	EOF
 }
